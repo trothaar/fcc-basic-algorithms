@@ -18,34 +18,44 @@
    the word "Book" with the word "dog", it should be replaced as "Dog."
 */
 
-function myReplace(str, before, after) {
-  // Put the array into a string
-  var strArr = str.split(" ");
-  // Find the index of the term we are searching on
-  var pos = strArr.indexOf(before);
+/* With thanks to http://stackoverflow.com/questions/17264639/replace-text-but-keep-case */
 
-  str.replace(before, function(x) {
-    return matchCase(after, before);
+function myReplace(str, before, after) {
+  // Create a regular expression
+  var r = new RegExp( "(" + before + ")" , 'gi' );
+  var newStr = str.replace(r, function(match) {
+    return matchCase(after, match);
 });
 
-  return str;
+  return newStr;
 }
 
-function matchCase(text, pattern) {
-    var result = '';
+function enforceLength(text, pattern, result) {
+  if (text.length > result.length) {
+    result = result.concat(text.substring(result.length, text.length));
+  }
 
-    for(var i = 0; i < text.length; i++) {
-        var c = text.charAt(i);
-        var p = pattern.charCodeAt(i);
+  if (pattern.length > text.length) {
+    result = result.substring(0, text.length);
+  }
 
-        if(p >= 65 && p < 65 + 26) {
-            result += c.toUpperCase();
-        } else {
-            result += c.toLowerCase();
-        }
+  return result;
+}
+
+function matchCase(text, pattern){
+  var result = '';
+
+  for (var i =0; i < pattern.length; i++){
+    var c = text.charAt(i);
+    var p = pattern.charAt(i);
+
+    if(p === p.toUpperCase()) {
+       result += c.toUpperCase();
+    } else {
+       result += c.toLowerCase();
     }
-
-    return result;
+  }
+  return enforceLength(text, pattern, result);
 }
 
 
