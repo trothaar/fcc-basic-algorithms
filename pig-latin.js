@@ -16,12 +16,13 @@ function translatePigLatin(str) {
   var len = str.length;
   var newStr = "";
   var firstLetter = str.charAt(0);
+  var firstTwo = str.substring(0,2);
 
-  if(isVowel(firstLetter)){
+  if(isVowel(firstLetter)){ // First case: 1st letter is vowel
     newStr = str.concat(vowel);
-  }else if(str.substring(0, 2) == "gl"){ // Hard-coded this
-    newStr = str.substring(2, len) + str.substring(0, 2) + consonant;
-  }else{
+  }else if(!isVowel(str[0]) && !isVowel(str[1])){ // 2nd case: Starts with "consonant cluster"
+    newStr = str.substring(2, len) + str[0] + str[1] + consonant;
+  }else{ // 3rd case: Starts with a single consonant
     newStr = str.substring(1, len) + firstLetter + consonant;
   }
 
@@ -32,16 +33,5 @@ function translatePigLatin(str) {
 function isVowel(c) {
     return ['a', 'e', 'i', 'o', 'u'].indexOf(c.toLowerCase()) !== -1;
 }
-
-/* NOT WORKING -- Go back and do this later
-Checks for *some* consonant clusters - I felt it was outside the
-scope of this project to include all of them, especially since the
-only one we have to worry about in this case is gl. If you really
-want to take the time to code all of them, see
-http://usefulenglish.ru/phonetics/practice-consonant-clusters
-for a complete list
-function isCluster(s) {
-  return ['pl', 'pr', 'gl', 'bl', 'br', 'tr'].indexOf(s.toLowerCase()) !== -1;
-} */
 
 translatePigLatin("consonant");
