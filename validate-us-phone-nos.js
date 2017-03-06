@@ -26,27 +26,32 @@
 
 function telephoneCheck(str) {
 
+  // Special cases: 911 or 411
+  if(str === "911" || str === "411"){
+    return true;
+  }
+
   //If string contains anything other than digits, dashes,
   //whitespace, and parens, return false
   var pattern = /[^0-9()-\s]/;
   if(pattern.test(str)){
-    console.log(str);
+    //console.log(str);
     return false;
   }
 
   //Remove all whitespaces from string
   var newStr = str.replace(/\s+/g, '');
-  //If newStr is < 10 characters
-  //(area code + phone no.) or >
-  //14 characters (1 + area code in parens + phone
-  //no.), return false
-  if(newStr.length<10 || newStr.length>14){
     console.log(newStr);
-    return false;
-  }  
 
-  // Good luck!
-  return true;
+  // Now test for an optional preceding 1, an area code
+  // with optional parens, and a 7-digit phone number with optional
+  // dashes
+  var regex = /^1?(\(\d{3}\)|\d{3})\-?\d{3}\-?\d{4}$/;
+  return regex.test(newStr);
+
 }
 
+
+//telephoneCheck("911");
+//telephoneCheck("411");
 telephoneCheck("555-555-5555");
