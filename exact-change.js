@@ -28,17 +28,21 @@ function checkCashRegister(price, cash, cid) {
   // Iterate through cid array and add up money in drawer
   var drawerTotal = 0;
   for(var i=0; i<cid.length; i++){
+    if(cid[i][1] === 1){ // Special case: only one $1 bill in drawer
+      drawerTotal += 1;
+    }else{
     var x = cid[i][1] * 100;
     drawerTotal += x;
+    }
   }
 
   console.log("Drawer total: " + drawerTotal + " Change due: " + changeNum);
   if(drawerTotal<changeNum){
     return "Insufficient Funds";
-  }
-
-  if(drawerTotal === changeNum){
+  } else if(drawerTotal === changeNum){
     return "Closed";
+  }else{
+    //Calculate change
   }
 
   // Here is your change, ma'am.
