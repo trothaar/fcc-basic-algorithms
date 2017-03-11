@@ -16,48 +16,43 @@
    highest to lowest order.
 */
 
-/*
-https://forum.freecodecamp.com/t/freecodecamp-algorithm-challenge-guide-exact-change/16012
-*/
-
-
 function checkCashRegister(price, cash, cid) {
-  var changeNum = (cash-price)*100;
-  var changeArr = [];
+  // Multiply amounts by 100 to get around Javascript's dislike of anything but integers
+  var grossChange = 100 * (cash - price);
+  var availableFunds = 0;
+  // Set array to hold denomination values & array to be returned
+  var moneyValues = [1, 5, 10, 25, 100, 500, 1000, 2000, 10000];
+  var amtToReturn = [];
 
-  // Iterate through cid array and add up money in drawer
-  var drawerTotal = 0;
-  for(var i=0; i<cid.length; i++){
-    if(cid[i][1] === 1){ // Special case: only one $1 bill in drawer
-      drawerTotal += 1;
-    }else{
-    var x = cid[i][1] * 100;
-    drawerTotal += x;
+  // Loop through cid array from end to beginning -- highest to lowest denoms
+  for (var i = cid.length - 1; i >= 0; i--){
+    var amt = 0;
+    while (moneyValues[i] <= grossChange && cid[i][1] > 0 && grossChange > 0){
+      // Deduct amount from cid & gross change, and keep track of how much
+      // was removed from the register
+      cid[i][1] -= moneyValues[i]/100;
+      grossChange -= moneyValues[i];
+      amt += moneyValues[i]/100;
+    }
+    if (amt !== 0){
+      amtToReturn.push([cid[i][0], amt]);
     }
   }
 
-  console.log("Drawer total: " + drawerTotal + " Change due: " + changeNum);
-  if(drawerTotal<changeNum){
+  // If there is some gross change left over, there's
+  // not enough in the drawer to cover it
+  if (grossChange !== 0){
     return "Insufficient Funds";
-  } else if(drawerTotal === changeNum){
-    return "Closed";
-  }else{
-    //Calculate change
   }
 
-  // Here is your change, ma'am.
-  return changeArr;
+  // If there is any money left in cid, return amtToReturn
+  for (var j = 0; j < cid.length; j++){
+    if (cid[j][1] > 0){
+      return amtToReturn;
+    }
+  }
+
+  // Default: Empty register
+  return "Closed";
+
 }
-
-// Example cash-in-drawer array:
-// [["PENNY", 1.01],
-// ["NICKEL", 2.05],
-// ["DIME", 3.10],
-// ["QUARTER", 4.25],
-// ["ONE", 90.00],
-// ["FIVE", 55.00],
-// ["TEN", 20.00],
-// ["TWENTY", 60.00],
-// ["ONE HUNDRED", 100.00]]
-
-checkCashRegister(19.50, 20.00, [["PENNY", 1.01], ["NICKEL", 2.05], ["DIME", 3.10], ["QUARTER", 4.25], ["ONE", 90.00], ["FIVE", 55.00], ["TEN", 20.00], ["TWENTY", 60.00], ["ONE HUNDRED", 100.00]]);
